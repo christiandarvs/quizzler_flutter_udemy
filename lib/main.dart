@@ -26,7 +26,20 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   int answeredQuestions = 0;
   List<Icon> scoreKeeper = [];
-  int totalQuestions = 9;
+  int userScore = 0;
+  List<bool> answers = [
+    true,
+    false,
+    true,
+    true,
+    false,
+    false,
+    true,
+    false,
+    false,
+    false
+  ];
+  bool? userAnswer;
   List<String> questions = [
     'Is Cordyceps Fungus From the Last of Us Real?',
     'Queen Elizabeth II is currently the second longest reigning British monarch.',
@@ -39,6 +52,15 @@ class _QuizPageState extends State<QuizPage> {
     'The Great Wall of China is longer than the distance between London and Beijing.',
     ' M&M stands for Mars and Moordale.'
   ];
+
+  void checkAnswer() {
+    if (answers[answeredQuestions] == userAnswer) {
+      userScore++;
+    }
+  }
+
+  int totalQuestions = 9;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,9 +96,12 @@ class _QuizPageState extends State<QuizPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: (() {
+                        userAnswer = true;
+                        debugPrint('$userAnswer');
                         debugPrint('Pressed True');
                         debugPrint('$answeredQuestions');
                         setState(() {
+                          checkAnswer();
                           if (answeredQuestions <= 9) {
                             answeredQuestions++;
                             scoreKeeper.add(const Icon(
@@ -96,9 +121,13 @@ class _QuizPageState extends State<QuizPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
                         onPressed: (() {
-                          debugPrint('Pressed True');
+                          userAnswer = false;
+                          debugPrint('$userAnswer');
+                          debugPrint('Pressed False');
                           debugPrint('$answeredQuestions');
                           setState(() {
+                            checkAnswer();
+
                             if (answeredQuestions <= 9) {
                               answeredQuestions++;
                               scoreKeeper.add(const Icon(
@@ -121,7 +150,7 @@ class _QuizPageState extends State<QuizPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Score: 10/10',
+                      'Score: $userScore/${questions.length}',
                       style: GoogleFonts.poppins(
                           color: Colors.white, fontSize: 20),
                     ),
@@ -130,8 +159,10 @@ class _QuizPageState extends State<QuizPage> {
                           setState(() {
                             answeredQuestions = 0;
                             scoreKeeper.clear();
+                            userScore = 0;
+                            userAnswer = null;
                           });
-
+                          debugPrint('$userAnswer');
                           debugPrint('Score Keeper: ${scoreKeeper.length}');
                           debugPrint('Answered Questions: $answeredQuestions');
                         }),
